@@ -30,9 +30,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download All Artifacts
+      id: artifact
       uses: actions/download-artifact@v4
       with:
         path: my-artifact
         pattern: my-artifact-*
         merge-multiple: true
-    - run: ls -R my-artifactange this to 'flutter test'.
+    - name: commit the change
+      if: steps.artifact.outcome == 'success'
+      run: |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Check for changes
+      id: git-check
+      run: |
+        git status --porcelain
+        echo "changes=$(if git status --porcelain | grep .; then echo 'true'; else echo 'false'; fi)" >> $GITHUB_OUTPUT
+
+    - name: Commit changes
+      if: steps.git-check.outputs.changes == 'true'
+      run: |
+        git add .
+        git commit -m "Automated commit: Update files"
+
+    - name: Push changes
+      if: steps.git-check.outputs.changes == 'true'
+      run: |
+        # Get the current branch name
+        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+        # Push to the current branch
+        git push origin $BRANCH_NAME
+
+    - name: No changes
+      if: steps.git-check.outputs.changes == 'false'
+      run: echo "No changes to commit"
