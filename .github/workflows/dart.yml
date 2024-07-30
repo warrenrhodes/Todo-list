@@ -36,33 +36,14 @@ jobs:
         path: my-artifact
         pattern: my-artifact-*
         merge-multiple: true
-    - run: echo "hello from comment tu vas" > file.txt
-    - name: commit the change
+    - name: Create report file
       if: steps.artifact.outcome == 'success'
-      run: |
-        git config user.name "GitHub Actions Bot"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-
-    - name: Check for changes
-      id: git-check
-      run: |
-        git status --porcelain
-        echo "changes=$(if git status --porcelain | grep .; then echo 'true'; else echo 'false'; fi)" >> $GITHUB_OUTPUT
+      run: date +%s > report.txt
 
     - name: Commit changes
-      if: steps.git-check.outputs.changes == 'true'
-      run: |
-        git add .
-        git commit -m "Automated commit: Update files"
-
-    - name: Push changes
-      if: steps.git-check.outputs.changes == 'true'
-      run: |
-        # Get the current branch name
-        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-        # Push to the current branch
-        git push origin $BRANCH_NAME
-
-    - name: No changes
-      if: steps.git-check.outputs.changes == 'false'
-      run: echo "No changes to commit"
+      uses: EndBug/add-and-commit@v9
+      with:
+        author_name: Your Name
+        author_email: mail@example.com
+        message: 'Your commit message'
+        add: '*.txt'
