@@ -36,6 +36,7 @@ jobs:
         path: my-artifact
         pattern: my-artifact-*
         merge-multiple: true
+    - run: echo "hello from comment tu vas" > file.txt
     - name: commit the change
       if: steps.artifact.outcome == 'success'
       run: |
