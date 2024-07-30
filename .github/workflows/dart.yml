@@ -41,7 +41,7 @@ jobs:
             merge-multiple: true
         - name: Create report file
           if: steps.artifact.outcome == 'success'
-          run: date +%s > report.txt
+          run: date +%s > test.txt
     
         - name: Commit changes
           uses: EndBug/add-and-commit@v9
@@ -52,3 +52,4 @@ jobs:
             add: '*.txt'
             committer_name: GitHub Actions
             committer_email: spreeloop-update-golens-bot@users.noreply.github.com
+            push: true
