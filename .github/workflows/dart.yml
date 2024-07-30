@@ -29,21 +29,26 @@ jobs:
     needs: upload
     runs-on: ubuntu-latest
     steps:
-    - name: Download All Artifacts
-      id: artifact
-      uses: actions/download-artifact@v4
-      with:
-        path: my-artifact
-        pattern: my-artifact-*
-        merge-multiple: true
-    - name: Create report file
-      if: steps.artifact.outcome == 'success'
-      run: date +%s > report.txt
-
-    - name: Commit changes
-      uses: EndBug/add-and-commit@v9
-      with:
-        author_name: Your Name
-        author_email: mail@example.com
-        message: 'Your commit message'
-        add: '*.txt'
+        - uses: actions/checkout@v4
+          with:
+            ref: ${{ github.head_ref }}
+        - name: Download All Artifacts
+          id: artifact
+          uses: actions/download-artifact@v4
+          with:
+            path: my-artifact
+            pattern: my-artifact-*
+            merge-multiple: true
+        - name: Create report file
+          if: steps.artifact.outcome == 'success'
+          run: date +%s > report.txt
+    
+        - name: Commit changes
+          uses: EndBug/add-and-commit@v9
+          with:
+            author_name: Your Name
+            author_email: mail@example.com
+            message: 'Your commit message'
+            add: '*.txt'
+            committer_name: GitHub Actions
+            committer_email: spreeloop-update-golens-bot@users.noreply.github.com
