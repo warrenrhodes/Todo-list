@@ -40,7 +40,7 @@ jobs:
             merge-multiple: true
         - name: Create report file
           if: steps.artifact.outcome == 'success'
-          run: date +%s > test2.txt
+          run: date +%s > test4.txt
     
         - name: commit and push the change file
           uses: stefanzweifel/git-auto-commit-action@v5
@@ -51,14 +51,14 @@ jobs:
             commit_user_email: spreeloop-update-golens-bot@users.noreply.github.com
             file_pattern: '.'
             branch: ${{ github.head_ref }}
+            push_options: '--force'
+            skip_dirty_check: true
+            commit_options: '--no-verify --signoff'
         - name: "Run if changes have been detected"
           if: steps.auto-commit-action.outputs.changes_detected == 'true'
           run: |
-            curl -X POST \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/dispatches \
-              -d '{"ref":"${{ github.head_ref }}"}'
+            echo "Changes!"
+            exit 1
 
         - name: "Run if no changes have been detected"
           if: steps.auto-commit-action.outputs.changes_detected == 'false' 
