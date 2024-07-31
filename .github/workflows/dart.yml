@@ -51,10 +51,6 @@ jobs:
             commit_user_name: GitHub Actions
             commit_user_email: spreeloop-update-golens-bot@users.noreply.github.com
             file_pattern: '.'
-            branch: ${{ github.head_ref }}
-            push_options: '--force'
-            skip_dirty_check: true
-            commit_options: '--no-verify --signoff'
         - name: "Run if changes have been detected"
           if: steps.auto-commit-action.outputs.changes_detected == 'true'
           run: echo "Changes!"
