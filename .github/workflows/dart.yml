@@ -31,7 +31,7 @@ jobs:
         - uses: actions/checkout@v4
           with:
             ref: ${{ github.head_ref }}
-            token: ${{ secrets.GITHUB_TOKEN }}
+            token: ${{ secrets.GOLDEN_UPDATE }}
         - name: Download All Artifacts
           id: artifact
           uses: actions/download-artifact@v4
@@ -41,7 +41,7 @@ jobs:
             merge-multiple: true
         - name: Create report file
           if: steps.artifact.outcome == 'success'
-          run: date +%s > test90.txt
+          run: date +%s > test91.txt
     
         - name: commit and push the change file
           uses: stefanzweifel/git-auto-commit-action@v5
