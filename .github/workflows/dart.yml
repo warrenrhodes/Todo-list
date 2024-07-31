@@ -18,7 +18,7 @@ jobs:
       contents: write
     steps:
     - name: Create a File
-      run: echo "hello from--9 ${{ matrix.runs-on }}" > file-${{ matrix.runs-on }}.txt
+      run: echo "hello from--2 ${{ matrix.runs-on }}" > file-${{ matrix.runs-on }}.txt
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -40,7 +40,7 @@ jobs:
             merge-multiple: true
         - name: Create report file
           if: steps.artifact.outcome == 'success'
-          run: date +%s > test4.txt
+          run: date +%s > test40.txt
     
         - name: commit and push the change file
           uses: stefanzweifel/git-auto-commit-action@v5
@@ -56,9 +56,8 @@ jobs:
             commit_options: '--no-verify --signoff'
         - name: "Run if changes have been detected"
           if: steps.auto-commit-action.outputs.changes_detected == 'true'
-          run: |
-            echo "Changes!"
-            exit 1
+          run: echo "Changes!"
+
 
         - name: "Run if no changes have been detected"
           if: steps.auto-commit-action.outputs.changes_detected == 'false' 
