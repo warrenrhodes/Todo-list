@@ -13,13 +13,12 @@ on:
 
 jobs:
   upload:
-    strategy:
-      matrix:
-        runs-on: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Create a File
-      run: echo "hello from ${{ matrix.runs-on }}" > file-${{ matrix.runs-on }}.txt
+      run: echo "hello from--2 ${{ matrix.runs-on }}" > file-${{ matrix.runs-on }}.txt
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -32,6 +31,7 @@ jobs:
         - uses: actions/checkout@v4
           with:
             ref: ${{ github.head_ref }}
+            token: ${{ secrets.GOLDEN_UPDATE }}
         - name: Download All Artifacts
           id: artifact
           uses: actions/download-artifact@v4
@@ -41,15 +41,21 @@ jobs:
             merge-multiple: true
         - name: Create report file
           if: steps.artifact.outcome == 'success'
-          run: date +%s > test.txt
+          run: echo "bonjour warren" > test91.txt
     
-        - name: Commit changes
-          uses: EndBug/add-and-commit@v9
+        - name: commit and push the change file
+          uses: stefanzweifel/git-auto-commit-action@v5
+          id: auto-commit-action
           with:
-            author_name: Your Name
-            author_email: mail@example.com
-            message: 'Your commit message'
-            add: '*.txt'
-            committer_name: GitHub Actions
-            committer_email: spreeloop-update-golens-bot@users.noreply.github.com
-            push: true
+            commit_message: Update the goldens
+            commit_user_name: GitHub Actions
+            commit_user_email: spreeloop-update-golens-bot@users.noreply.github.com
+            file_pattern: '.'
+        - name: "Run if changes have been detected"
+          if: steps.auto-commit-action.outputs.changes_detected == 'true'
+          run: echo "Changes!"
+
+
+        - name: "Run if no changes have been detected"
+          if: steps.auto-commit-action.outputs.changes_detected == 'false' 
+          run: echo "No Changes!"
